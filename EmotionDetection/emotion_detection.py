@@ -8,6 +8,16 @@ def emotion_detector(text_to_analyse):
     header = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}  # Set the headers required for the API request
     response = requests.post(url, json=myobj, headers=header)  # Send a POST request to the API with the text and headers
 
+    if response.status_code == 400:
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
+
     # Parsing the JSON response from the API
     formatted_response = json.loads(response.text)
 
@@ -28,6 +38,7 @@ def emotion_detector(text_to_analyse):
         'sadness': sadness_score
     }
     dominant_emotion = max(emotion_scores, key=emotion_scores.get)
+
     # Creating the response dictionary
     result = {
         'anger': anger_score,
